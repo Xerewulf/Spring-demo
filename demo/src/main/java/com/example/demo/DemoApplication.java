@@ -21,7 +21,7 @@ public class DemoApplication {
 		return List.of(
 
 new Cups(	1,
-		12,
+
 		"pas",
 		"bah",
 		"oval" )

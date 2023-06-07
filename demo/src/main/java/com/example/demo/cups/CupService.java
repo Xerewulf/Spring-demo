@@ -1,24 +1,53 @@
 package com.example.demo.cups;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 @Service
 public class CupService {
 
-    public List<Cups> getService(){
-        return List.of(
+    private final cupsRepository cupsrepository;
 
-                new Cups(	1,
-                        12,
-                        "pas",
-                        "bah",
-                        "oval" )
-            ) ;
-        }
+    public CupService(cupsRepository cupsrepository) {
+        this.cupsrepository = cupsrepository;
     }
+
+    public List<Cups> getService(){
+       return cupsrepository.findAll();
+        }
+
+
+    public void addNewCups(Cups cups) {
+
+        Optional<Cups> cupsById = cupsrepository.findCupsByName(cups.getName());
+
+    if(cupsById.isPresent()){
+        throw new IllegalStateException("name is taken");
+    }
+    cupsrepository.save(cups);
+    }
+
+    public void deleteCups(int id) {
+    boolean exist = cupsrepository.existsById(id);
+
+    if(!exist){
+        throw new IllegalStateException("cups with this id is not exist");
+    }
+    cupsrepository.deleteById(id);
+
+    }
+
+    @Transactional
+    public void updateCups(int id, String name, String brand) {
+
+        Cups cups = cupsrepository.findCupsByName(name).orElseThrow(()-> new IllegalStateException("No cups found with that name"));
+
+
+        if (name != null && name.length()>0 && !Objects.equals(cups.getName(),name)){ cups.setName(name); }
+
+    }
+}

@@ -1,8 +1,23 @@
 package com.example.demo.cups;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table
 public class Cups {
+@Id
+@SequenceGenerator(
+        name = "cups_sequance",
+        sequenceName = "cups_sequance",
+        allocationSize = 1
+)
+@GeneratedValue(
+        strategy = GenerationType.SEQUENCE,
+        generator = "cups_sequance"
+)
 
     private int id;
+@Transient
     private int age;
 
     private String name;
@@ -14,16 +29,16 @@ public class Cups {
     public Cups() {
     }
 
-    public Cups(int id, int age, String name, String brand, String shape) {
+    public Cups(int id, String name, String brand, String shape) {
         this.id = id;
-        this.age = age;
+        //this.age = age;
         this.name = name;
         this.brand = brand;
         this.shape = shape;
     }
 
-    public Cups(int age, String name, String brand, String shape) {
-        this.age = age;
+    public Cups( String name, String brand, String shape) {
+       // this.age = age;
         this.name = name;
         this.brand = brand;
         this.shape = shape;
